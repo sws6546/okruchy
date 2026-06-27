@@ -90,6 +90,6 @@ class Security
 
     private function isUserExist(?Writer $user): bool
     {
-        return $user == null;
+        return $user != null;
     }
 }

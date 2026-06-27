@@ -20,5 +20,6 @@ final class AuthController extends AbstractController
         }
 
         return $security->login($data["email"], $data["password"]);
+        // TODO: recaptcha
     }
 }
