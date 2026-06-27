@@ -11,20 +11,12 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class AuthController extends AbstractController
 {
-    #[Route('/auth', name: 'app_auth')]
-    public function index(): JsonResponse
+    #[Route('/auth/login', methods: ["POST"])]
+    public function login(Request $request, Security $security): JsonResponse
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/AuthController.php',
-        ]);
-    }
-
-    #[Route('/auth/getuser', methods: ["POST"])]
-    public function userFromEmail(Request $req, Security $security) {
-        $data = $req->toArray();
-        if(!isset($data['email']) or !isset($data["password"])) {
-            return $this->json(['error' => "There is not email field provided"], Response::HTTP_BAD_REQUEST);
+        $data = $request->toArray();
+        if (!isset($data["email"]) or !isset($data["password"])) {
+            return $this->json(["error" => "There is no email or password fields"], Response::HTTP_BAD_REQUEST);
         }
 
         return $security->login($data["email"], $data["password"]);
