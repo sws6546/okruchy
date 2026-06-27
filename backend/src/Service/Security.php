@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Logins;
 use App\Entity\Writer;
 use Doctrine\ORM\EntityManagerInterface;
 use Firebase\JWT\JWT;
@@ -17,19 +18,30 @@ class Security
         private EntityManagerInterface $em
     ) {}
 
-    public function login(string $email, string $password): JsonResponse
+    public function login(string $email, string $password, Request $req): JsonResponse
     {
         $user = $this->em->getRepository(Writer::class)->findOneBy(["email" => $email]);
 
-        if (!$this->isUserExist($user)){
+        if (!$this->isUserExist($user)) {
             return new JsonResponse(["error" => "User not found"], Response::HTTP_NOT_FOUND);
         }
         if (!$this->isPasswordOk($user, $password)) {
             return new JsonResponse(["error" => "Bad password"], Response::HTTP_UNAUTHORIZED);
         }
-        
+
+        $this->createLoginLog($user, $req);
         $jwt = $this->generateJWT($user);
         return new JsonResponse(["success" => true, "token" => $jwt], Response::HTTP_ACCEPTED);
+    }
+
+    private function createLoginLog(Writer $user, Request $req) {
+        $login = new Logins();
+        $login->setWriter($user);
+        $login->setIp($req->getClientIp());
+        $login->setCreatedDate(new \DateTime());
+
+        $this->em->persist($login);
+        $this->em->flush();
     }
 
 
@@ -67,7 +79,8 @@ class Security
         }
     }
 
-    private function generateJWT(Writer $user): string {
+    private function generateJWT(Writer $user): string
+    {
         $jwt = JWT::encode(
             payload: [
                 'iss' => 'localhost',
@@ -84,7 +97,8 @@ class Security
         return $jwt;
     }
 
-    private function isPasswordOk(?Writer $user, string $password) {
+    private function isPasswordOk(?Writer $user, string $password)
+    {
         return password_verify($password, $user->getPassword());
     }
 

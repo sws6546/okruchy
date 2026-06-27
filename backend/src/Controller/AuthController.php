@@ -19,7 +19,8 @@ final class AuthController extends AbstractController
             return $this->json(["error" => "There is no email or password fields"], Response::HTTP_BAD_REQUEST);
         }
 
-        return $security->login($data["email"], $data["password"]);
+        return $security->login($data["email"], $data["password"], $request);
         // TODO: recaptcha
+        // TODO: check if ip in Loggins is ok
     }
 }
