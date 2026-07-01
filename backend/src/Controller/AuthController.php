@@ -23,4 +23,18 @@ final class AuthController extends AbstractController
         // TODO: recaptcha
         // TODO: check if ip in Loggins is ok
     }
+
+    #[Route('/auth/check_login', methods: ["GET"])]
+    public function checkLogin(Request $request, Security $security): JsonResponse {
+        $user = $security->authorize($request);
+        // dump($user);
+        if ($user == null) {
+            return $this->json(["err" => "Bad token"], Response::HTTP_UNAUTHORIZED);
+        }
+        return $this->json([
+            "id" => $user->getId(),
+            "username" => $user->getUsername(),
+            "email" => $user->getEmail()
+        ]);
+    }
 }

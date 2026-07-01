@@ -57,13 +57,13 @@ class Security
 
         $payload = $this->verifyToken($token);
 
-        if ($payload === null) {
+        if ($payload == null) {
             return null;
         }
 
         $user = $this->em->getRepository(Writer::class)->find($payload->sub);
 
-        if ($user === null) {
+        if ($user == null) {
             return null;
         }
 
