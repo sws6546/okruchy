@@ -16,7 +16,9 @@
         "symfony/flex": "^2",
         "symfony/framework-bundle": "8.1.*",
         "symfony/runtime": "8.1.*",
-        "symfony/yaml": "8.1.*"
+        "symfony/translation": "8.1.*",
+        "symfony/yaml": "8.1.*",
+        "vich/uploader-bundle": "*"
     },
     "config": {
         "allow-plugins": {
