@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Enum\TextSize;
 use App\Repository\TextComponentRepository;
-use BcMath\Number;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,11 +18,14 @@ class TextComponent
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
 
-    #[ORM\Column(type: Types::NUMBER)]
-    private ?Number $position = null;
+    #[ORM\Column]
+    private ?int $position = null;
 
     #[ORM\Column(enumType: TextSize::class)]
     private ?TextSize $size = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tekstComponents')]
+    private ?ArticleContent $articleContent = null;
 
     public function getId(): ?int
     {
@@ -42,12 +44,12 @@ class TextComponent
         return $this;
     }
 
-    public function getPosition(): ?Number
+    public function getPosition(): ?int
     {
         return $this->position;
     }
 
-    public function setPosition(Number $position): static
+    public function setPosition(int $position): static
     {
         $this->position = $position;
 
@@ -62,6 +64,18 @@ class TextComponent
     public function setSize(TextSize $size): static
     {
         $this->size = $size;
+
+        return $this;
+    }
+
+    public function getArticleContent(): ?ArticleContent
+    {
+        return $this->articleContent;
+    }
+
+    public function setArticleContent(?ArticleContent $articleContent): static
+    {
+        $this->articleContent = $articleContent;
 
         return $this;
     }

@@ -33,6 +33,9 @@ class ImageComponent
     #[ORM\Column(type: Types::TEXT)]
     private ?string $authorIp = null;
 
+    #[ORM\ManyToOne(inversedBy: 'ImageComponents')]
+    private ?ArticleContent $articleContent = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -94,6 +97,18 @@ class ImageComponent
     public function setAuthorIp(string $authorIp): static
     {
         $this->authorIp = $authorIp;
+
+        return $this;
+    }
+
+    public function getArticleContent(): ?ArticleContent
+    {
+        return $this->articleContent;
+    }
+
+    public function setArticleContent(?ArticleContent $articleContent): static
+    {
+        $this->articleContent = $articleContent;
 
         return $this;
     }
